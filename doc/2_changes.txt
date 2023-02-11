@@ -1,0 +1,26 @@
+Program Changes: 
+* Change your program so that a user can perform multiple searches during one
+  launch. e.g.:
+  > file hello*.txt
+  tmp/hello.txt
+  tmp/hello1.txt
+  > file hello1.txt
+  tmp/hello1.txt
+  > quit 
+  (exits the program)
+
+* Change your program so that it creates an index in RAM as you suggested. 
+  Use this index to make multiple searches faster.
+  We can do this by using our existing code but writing the paths to a data 
+  structure for later use (up to you to figure out which one should be used
+  to store the data (string, list, dictionary, set, etc.). Think of what 
+  information you need to store for each path so that your program will
+  remember what to search. I have added 3 options to the TEST variable, a
+  local test with the test/ directory, a user path test (C:\Users\Daniel) and
+  a root test (C:\\). 
+
+  BEFORE RUNNING YOUR PROGRAM ON ROOT, SAVE YOUR WORK AND CLOSE EVERYTHING YOU DON'T NEED. 
+
+  Your program will most likely run out of RAM and your computer might get slow, 
+  have the task manager open and kill it. Nothing bad will happen, but it's 
+  good to see how a program can exhaust memory.

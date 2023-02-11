@@ -1,0 +1,16 @@
+1 - Lee los documentos en 4-multihilos para familiarizarte con como los hilos
+trabajan en Python.
+2 - Change the program so that the index() function runs on its own Thread.
+The program should start immediately and allow the user to begin searching.
+We must handle the following cases:
+- The initial creation of the index.sqlite database (fresh start). In this
+  case we should index in the background and let the user now that any
+  searches will not have the full results (e.g. a message like 
+  "Indexing in the background, results may not be complete.")
+- Updating the index.sqlite in the background, let the user know that results
+  may not be up to date (e.g. a message like "Updating index in the background,
+  results may not be complete.")
+- Once the index is updated, these messages should not be shown during searches.
+3 - Write a new Logging class that is thread-safe. Currently if you call
+print() from different threads, it is possible that the printed output looks
+weird, we should lock calls to print so that we don't have this issue.

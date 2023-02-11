@@ -1,0 +1,38 @@
+* Change the search path to the root of C:\\ again. Try searching for an
+  executable file like "file *a*.exe". Let the program run and see how
+  long it takes (it could take several minutes so just wait and let it
+  run).
+Think about:
+1) What do you think is causing the program to take this long?
+2) Then how do you think we can improve the search?
+  Hint:
+  * Computers have RAM memory which is fast (this is what we use
+    when you create a list or a dictionary),
+  * Disk memory which is slow: this is where we run the search looking
+    through all files and directories.
+  * The processor which runs your program so any string operations and
+    program operations are handled by the processor.
+3) What happens if the user wants to search multiple times? Like
+  searching for "file *a*.exe" then "file *b*.exe"? How would we do it
+  in current case of the program? We would need to start the program
+  twice and read through the _entire_ disk twice to see if the files
+  exist. Can we use memory to speed this up?
+
+1) I think that the program is using the disk memory to search through all files and directories and that is the reason
+why is taking so long.
+* Yes reading from disk is the "bottleneck" or what is making our program slow.
+
+2) We can improve the search using the processor.
+* So the processor wouldn't be able to improve the search since what is blocking
+  our program is that reading from the disk is so slow. We can improve the 
+  search by using the computer's memory since 99% of the files on disk won't
+  change very often (think of how many times you create/delete/rename files, 
+  most files/directories stay the same over time).
+
+3) Yes, we should use RAM memory to increase the speed. 
+* Your laptop probably has ~2 GB of memory, assume that every character in a 
+  word will take 1 byte to store at at a lower bound. So you would be able to
+  store up to 2,000,000,000 characters before your computer runs out of space.
+  Computers can have long file names and lots of paths, so your program might
+  cause your computer to run out of memory before it finishes the search.
+* Lets try this approach for a learning experience and since it's simple :)

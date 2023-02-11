@@ -1,0 +1,124 @@
+3 - Sqlite
+
+Primo ahora vas a aprender como usar una base de datos mas moderna que se 
+llama sqlite. Apender a declarar tablas en bases de datos y sacar los datos
+de ellas es importante y hay clases enteras en bases de datos. Por ahora lo que
+requiere el programa no es muy complicado entonces esto te dara solo una idea
+de lo que es programar con una base de datos. Te mande unos documentos en la
+carpeta sqlite ve las lecturas 4 y 5 que te dicen como declarar, manipular, y
+sacar datos de una base de datos, despues ve el "Python sqlite3.html" para que
+veas como se usa sqlite3 con Python. Tambien puedes buscar la documentacion de
+sqlite3 con el explorador que te mande hace tiempo, solo busca el modulo 
+"sqlite3". Probablemente vas a tener preguntas, puedes ponerlas en la parte
+de abajo de este documento y te las respondo. Ahora para que sigas practicando 
+seguimos con el ingles jaja.
+
+For this part of the program we will use a database called sqlite to store our
+file system index with all the files. Sqlite is a "relational database" that
+basically stores data in tables, we use a structured query language (SQL) to
+query databases. While looking through the lectures and the documentation, 
+think about how to define your file system table. 
+
+Things to think about:
+* What columns will you need? (Depending on what your program will allow 
+  searching for, this will change, currently you allow searching for 
+  files/directories by filename)
+* What will the types for the columns be?
+* How will we query the database based on the user's commands? (Hint: LIKE and 
+  % basically give us the support you provided with *)
+
+Steps:
+1) Think about the questions above.
+2) Write the table with the columns based on the questions above. (I can
+   check this before you start 3)
+3) Write the definition for the table. (i.e. CREATE TABLE)
+4) Write the data insertion for the table (i.e. INSERT VALUES)
+5) Write the queries to get the data (i.e. SELECT <> FROM <> WHERE <>)
+6) Write the Python class index.py that will os.walk and do the things above.
+7) Refactor the code to use index.py to perform the search.
+8) More performance improvements to come...
+8.1) Indexing the filenames:
+    1. Read parts of 3_Arboles-B so that you have a general understanding of how
+       B trees work. We can use these trees to make the search much faster.
+       Don't worry, sqlite handles this for you, so all you have to do is run
+       one command to create the index. But it is good to know how the index
+       itself works.
+    2. Before we add the index, run the following searches and write down how
+       long they take:
+         file *e.exe
+         directory *be*
+         # Try any other searches you think might take a long time.
+    3. Now let's create the index, add the following command after you create
+       the table:
+       CREATE INDEX filename_index ON search(name)
+       This will create an index named "filename_index" on the table "search"
+       with the column "name".
+    4. Now try the searches from 2. again and write down how long they take.
+       How much did the speed improve?
+8.2) Limit the results:
+    1. Your program is really good now at finding things using the sqlite 
+       database, but it it doesn't prevent the user from doing something 
+       dumb and causing it to crash. For example what do you think would 
+       happen with the command:
+       all *
+       Your program would likely print out every file in the database! This
+       Would potentially crash the program or exhaust all of your computer's
+       memory. (Also it's not really useful to let the user search for all
+       these files if they won't really use them)
+    2. To protect against this we should limit the number of results that
+       the query returns using the LIMIT keyword. So to your queries just add
+       to the end:
+       LIMIT 50 
+       And this will limit the number of results to 50 items. (Make 50 a 
+       constant in the class like MAX_RESULTS = 50 and use that instead of
+       just using 50)
+8.3) Sort the results:
+    1. The results are currently in whatever order sqlite returns them to us.
+       We can probably order them using a smarter system. So the way other
+       search engines do this is by assigning a "rank" which would be the 
+       priority of the item when it is displayed. 
+    2. For now we will use a simple rank:
+       if a directory is in your user directory (e.g. C:\\Users\Daniel), rank = 1
+       else: rank = 0
+    3. So to do this you should update your CREATE TABLE command (this is called
+       your table's 'schema'). You should add a new column called "rank". Then
+       when you insert the items into the database you can calculate the
+       items rank using a function that takes the path and calculates its rank
+       by checking if it is within your user directory
+       (hint: use str.find and os.path.expanduser("~")) 
+    4. Update your queries so that you have a 
+       SORT BY rank DESC, name ASC
+       Before the LIMIT but after the WHERE
+       - This sorts by "rank" first in descending order, then by name in 
+         ascending order (descending es descendiendo (3, 2, 1), 
+         ascending es ascendiendo (A, B, C)) so then for this:
+         | rank | name  |
+         | 1    | b.txt |
+         | 0    | a.txt |
+         | 1    | c.txt |
+         | 0    | b.txt |
+         It would sort it as:
+         | rank | name  |
+         | 1    | b.txt |
+         | 1    | c.txt |
+         | 0    | a.txt |
+         | 0    | b.txt |
+
+== Questions == 
+
+Esta es la forma en la que pude crear una tabla que contenga a los dos 
+''self.cursor.execute("CREATE TABLE if not exists search(name text, filepath text, dirpath text)")''
+
+We should change it to: 
+CREATE TABLE IF NOT EXISTS search(name TEXT, filepath TEXT, type INTERGER)
+* Using TEXT for dirpath would be inefficient since all we need is a type
+  that can be represented using an integer. I added a new enum to utils.py
+  that we will use to represent this.
+
+Cuando hago la busqueda de C:// este archivo me da error ''xb'BV5!!!!!!!!!MKKSkOfficeDigitalSFiles_''
+* What is the error?
+
+Error: sqlite3.OperationalError: near "BV5": syntax error
+
+file *e.exe took 0.175 seconds - the second search took 0.074 seconds
+directory *be* took 0.165 seconds -the second search took 0.017 seconds 
